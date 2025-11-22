@@ -19,3 +19,14 @@ Download the library and include it. Make sure to write comprehensive tests and 
 ## packaging prompt 
 
 add instructions on how to package and install
+
+## remove google auth
+
+remove the need of authenticating to google and instead let me configure a Gemini API key in the browser configuration for the extension.
+- update the extension
+- update the HTML popup page
+- update the README to reflect this new setup
+
+## update the results ZIP
+
+make a small change: append a unique identifier to the name the ZIP file, using a UUID4 format based on the current timestamp.
