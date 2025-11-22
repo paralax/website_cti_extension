@@ -2,6 +2,10 @@
 
 This Chrome extension allows you to analyze web pages using Google's Gemini API. You can create and store prompts, process the content of the current page, capture a screenshot, and download all the results as a zip archive.
 
+![Extension screenshot, a squid grabbing some laptops.](/assets/website_cti_extension_logo.png)
+
+
+
 ## Setup
 
 Before you can use the extension, you need to obtain a Gemini API key.
