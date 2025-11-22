@@ -11,3 +11,13 @@ Develop a Chrome extension that does the following:
   - present the user with the output of the web page after processing with the Gemini prompt 
   - allow the user capture a screenshot of the web page the user is visiting
   - present the user with feature that lets them download the web page source HTML together with the source URL and the current timestamp, the screenshot they made using the extension, and the results of running the Gemini prompt
+
+## follow up prompt
+
+Download the library and include it. Make sure to write comprehensive tests and ensure as complete coverage as possible. Make sure all tests pass.
+
+## packaging prompt 
+
+add instructions on how to package and install
+
+
