@@ -1,0 +1,28 @@
+body {
+  font-family: sans-serif;
+  width: 300px;
+  padding: 10px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+button {
+  width: 100%;
+  margin: 5px 0;
+  padding: 10px;
+  cursor: pointer;
+}
+
+select, textarea, input {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+#output {
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-height: 100px;
+  margin-top: 10px;
+}
