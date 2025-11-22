@@ -5,15 +5,9 @@
   "description": "An extension to analyze web pages with Google Gemini.",
   "permissions": [
     "activeTab",
-    "storage",
-    "identity"
+    "storage"
   ],
-  "oauth2": {
-    "client_id": "YOUR_CLIENT_ID.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/generative-language"
-    ]
-  },
+  "options_page": "options.html",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
