@@ -19,5 +19,3 @@ Download the library and include it. Make sure to write comprehensive tests and 
 ## packaging prompt 
 
 add instructions on how to package and install
-
-
