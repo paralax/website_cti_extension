@@ -62,7 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
       zip.generateAsync({ type: "blob" }).then((content) => {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(content);
-        link.download = "gemini-results.zip";
+        const uuid = crypto.randomUUID();
+        link.download = `gemini-results-${uuid}.zip`;
         link.click();
       });
     });
