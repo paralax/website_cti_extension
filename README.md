@@ -4,27 +4,15 @@ This Chrome extension allows you to analyze web pages using Google's Gemini API.
 
 ## Setup
 
-Before you can use the extension, you need to configure your own Google Cloud project and obtain an OAuth 2.0 Client ID.
+Before you can use the extension, you need to obtain a Gemini API key.
 
-1.  **Create a Google Cloud Project:**
-    *   Go to the [Google Cloud Console](https://console.cloud.google.com/).
-    *   Create a new project.
-    *   Enable the **Generative Language API** for your project.
+1.  **Get a Gemini API Key:**
+    *   Visit [Google AI Studio](https://aistudio.google.com/) to create and manage your API keys.
+    *   You may need to create a Google Cloud project if you don't have one already.
 
-2.  **Create an OAuth 2.0 Client ID:**
-    *   In the Google Cloud Console, navigate to **APIs & Services > Credentials**.
-    *   Click **Create Credentials > OAuth client ID**.
-    *   Choose **Chrome App** as the application type.
-    *   Enter the **Application ID**, which you can find by following these steps:
-        1.  Go to `chrome://extensions` in your Chrome browser.
-        2.  Enable **Developer mode**.
-        3.  Click **Load unpacked** and select the directory containing this extension's code.
-        4.  The ID of the loaded extension is your Application ID.
-    *   Click **Create**.
-
-3.  **Update the `manifest.json` file:**
-    *   Open the `manifest.json` file in the extension's directory.
-    *   Replace the placeholder value for `client_id` with the Client ID you just created.
+2.  **Configure the Extension:**
+    *   After installing the extension, open its options page. You can usually do this by right-clicking the extension icon in your browser's toolbar and selecting "Options".
+    *   Paste your Gemini API key into the designated field and click "Save".
 
 ## Installation (for Development)
 

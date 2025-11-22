@@ -1,18 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const authenticateButton = document.getElementById('authenticate');
   const mainContent = document.getElementById('main-content');
+  const apiKeyMessage = document.getElementById('api-key-message');
+  let apiKey = null;
 
-  authenticateButton.addEventListener('click', () => {
-    chrome.identity.getAuthToken({ interactive: true }, (token) => {
-      if (chrome.runtime.lastError || !token) {
-        console.error('Authentication failed:', chrome.runtime.lastError);
-        return;
-      }
-      console.log('Authentication successful. Token:', token);
+  // Check for API key on startup
+  chrome.storage.local.get(['geminiApiKey'], (result) => {
+    if (result.geminiApiKey) {
+      apiKey = result.geminiApiKey;
       mainContent.style.display = 'block';
-      authenticateButton.style.display = 'none';
-      fetchModels(token);
-    });
+      apiKeyMessage.style.display = 'none';
+      fetchModels(apiKey);
+    } else {
+      mainContent.style.display = 'none';
+      apiKeyMessage.style.display = 'block';
+    }
   });
 
   const modelSelect = document.getElementById('model-select');
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   captureScreenshotButton.addEventListener('click', () => {
     chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
       screenshotDataUrl = dataUrl;
-      console.log('Screenshot captured:', dataUrl);
+      console.log('Screenshot captured');
     });
   });
 
@@ -96,18 +97,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  async function fetchModels(token) {
+  async function fetchModels(apiKey) {
     try {
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      data.models.forEach(model => {
+      // Filter for models that support generateContent
+      const filteredModels = data.models.filter(model =>
+        model.supportedGenerationMethods.includes("generateContent")
+      );
+
+      filteredModels.forEach(model => {
         const option = document.createElement('option');
         option.value = model.name;
         option.textContent = model.displayName;
@@ -115,18 +117,23 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (error) {
       console.error('Error fetching models:', error);
-      outputDiv.textContent = 'Error fetching models. See console for details.';
+      outputDiv.textContent = 'Error fetching models. Is your API key valid?';
     }
   }
 
   processPageButton.addEventListener('click', () => {
+    if (!apiKey) {
+        outputDiv.textContent = 'API key not set. Please set it in the options page.';
+        return;
+    }
+
     outputDiv.textContent = 'Processing...';
     processPageButton.disabled = true;
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { action: 'getSourceCode' }, (response) => {
+      chrome.tabs.sendMessage(tabs[0].id, { action: 'getSourceCode' }, async (response) => {
         if (chrome.runtime.lastError) {
           console.error(chrome.runtime.lastError);
-          outputDiv.textContent = 'Error: Could not get source code from the page.';
+          outputDiv.textContent = 'Error: Could not get source code from the page. Try reloading the page.';
           processPageButton.disabled = false;
           return;
         }
@@ -134,19 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedModel = modelSelect.value;
         const selectedPrompt = promptSelect.value;
 
-        chrome.identity.getAuthToken({ interactive: false }, async (token) => {
-          if (chrome.runtime.lastError || !token) {
-            console.error('Authentication failed:', chrome.runtime.lastError);
-            outputDiv.textContent = 'Error: Authentication failed.';
-            processPageButton.disabled = false;
-            return;
-          }
-
-          try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent`, {
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`, {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
@@ -160,7 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                console.error('API Error:', errorData);
+                throw new Error(`HTTP error! status: ${response.status} - ${errorData.error.message}`);
             }
 
             const data = await response.json();
@@ -171,11 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           } catch (error) {
             console.error('Error processing page:', error);
-            outputDiv.textContent = 'Error processing page. See console for details.';
+            outputDiv.textContent = `Error: ${error.message}`;
           } finally {
             processPageButton.disabled = false;
           }
-        });
       });
     });
   });
