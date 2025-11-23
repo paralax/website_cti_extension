@@ -28,7 +28,7 @@ global.JSZip = jest.fn().mockImplementation(() => ({
 // --- Test Suite ---
 
 const fs = require('fs');
-const path = require('path');
+const path =require('path');
 const html = fs.readFileSync(path.resolve(__dirname, './popup.html'), 'utf8');
 
 // A promise utility to wait for the next tick, allowing async operations to complete.
@@ -60,9 +60,9 @@ describe('popup.js', () => {
     });
 
     describe('Initialization Flow', () => {
-        it('should show an API key prompt if the key is not stored', () => {
+        it('should show an API key prompt if no keys are stored', () => {
             chrome.storage.local.get.mockImplementation((keys, callback) => {
-                callback({ prompts: [] }); // No geminiApiKey property
+                callback({ geminiApiKeys: [], prompts: [] });
             });
 
             require('./popup.js');
@@ -71,9 +71,9 @@ describe('popup.js', () => {
             expect(document.getElementById('api-key-message').style.display).toBe('block');
         });
 
-        it('should fetch models and show the main UI if an API key is stored', async () => {
+        it('should fetch models and show the main UI if API keys are stored', async () => {
             chrome.storage.local.get.mockImplementation((keys, callback) => {
-                 callback({ geminiApiKey: 'test-api-key', prompts: [] });
+                 callback({ geminiApiKeys: [{name: 'test', key: 'test-api-key'}], prompts: [] });
             });
 
             require('./popup.js');
@@ -90,7 +90,10 @@ describe('popup.js', () => {
 
         beforeEach(() => {
             chrome.storage.local.get.mockImplementation((keys, callback) => {
-                callback({ geminiApiKey: 'test-api-key', prompts: [] });
+                callback({
+                    geminiApiKeys: [{ name: 'test', key: 'test-api-key' }],
+                    prompts: [{ name: 'Test Prompt', text: 'Summarize this page' }]
+                });
             });
 
             const originalCreateElement = document.createElement;
@@ -119,6 +122,10 @@ describe('popup.js', () => {
             require('./popup.js');
             document.dispatchEvent(new Event('DOMContentLoaded'));
             await flushPromises();
+
+            // Simulate selecting a prompt
+            const promptSelect = document.getElementById('prompt-select');
+            promptSelect.value = 0;
 
             document.getElementById('process-page').click();
             await flushPromises();
