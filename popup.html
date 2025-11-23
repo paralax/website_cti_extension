@@ -10,15 +10,20 @@
     <p>Please <a href="options.html" target="_blank">set your Gemini API key</a> to use this extension.</p>
   </div>
   <div id="main-content" style="display:none;">
+    <h2>Select an API Key</h2>
+    <select id="api-key-select"></select>
     <h2>Select a Gemini Model</h2>
     <select id="model-select"></select>
     <h2>Select a Prompt</h2>
     <select id="prompt-select"></select>
     <button id="new-prompt">New Prompt</button>
+    <button id="edit-prompt">Edit</button>
+    <button id="delete-prompt">Delete</button>
     <div id="new-prompt-container" style="display:none;">
       <input type="text" id="prompt-name" placeholder="Prompt Name">
       <textarea id="prompt-text" placeholder="Enter your prompt here..."></textarea>
       <button id="save-prompt">Save Prompt</button>
+      <button id="cancel-prompt">Cancel</button>
     </div>
     <button id="process-page">Process Page with Gemini</button>
     <button id="capture-screenshot">Capture Screenshot</button>
