@@ -6,10 +6,32 @@
 </head>
 <body>
   <h1>Gemini Web Companion Options</h1>
-  <h2>Gemini API Key</h2>
-  <input type="text" id="api-key" size="50">
-  <button id="save">Save</button>
+  <h2>API Keys</h2>
   <div id="status"></div>
+
+  <table id="api-keys-table">
+      <thead>
+          <tr>
+              <th>Name</th>
+              <th>Key</th>
+              <th>Actions</th>
+          </tr>
+      </thead>
+      <tbody>
+          <!-- Rows will be added dynamically -->
+      </tbody>
+  </table>
+  <button id="add-key-btn">Add New Key</button>
+
+  <div id="key-form-container" style="display: none;">
+      <h3 id="form-title">Add API Key</h3>
+      <input type="hidden" id="key-index">
+      <input type="text" id="key-name-input" placeholder="Key Name">
+      <input type="text" id="api-key-input" placeholder="API Key">
+      <button id="save-key-btn">Save</button>
+      <button id="cancel-key-btn">Cancel</button>
+  </div>
+
   <script src="options.js"></script>
 </body>
 </html>
